@@ -12,5 +12,6 @@
 load uc_data
 
 % specify which index you want in uc
-index = 50
+index = 10;
+c = uc(end,index)
 osc(x, uc, index)

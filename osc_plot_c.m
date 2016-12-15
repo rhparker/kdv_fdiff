@@ -13,7 +13,7 @@ start = floor(length(x)/200);
 y=x(start:end);
 
 % scale solution by exp(decay) to recover oscillations
-uscaled=u(start:end).*exp(decay*y)
+uscaled=u(start:end).*exp(decay*y);
 umax=max(uscaled);
 
 % plot along with sine function of same scaling

@@ -23,7 +23,7 @@ function [uout, c] = solveKdV_fdiff_newton(xold,uold)
 
 % here use the Newton solver on the same domain as given
 N = length(xold);
-L = 50;             % domain truncation
+L = xold(end) - xold(1);             
 h = L/(N-1); 
 
 par.c = uold(end);
