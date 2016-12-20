@@ -1,10 +1,10 @@
-function osc(x, uc, index)
+function osc(x, uc, index, config)
 %% make plot of oscillations
 % extract initial data
 uin = uc(1:end,index);
 
 % ramp up to 5000 grid points
-[xfine, ufine, c] = solveKdV_fdiff_newton_interp(x,uin);
+[xfine, ufine, c] = solveKdV_fdiff_newton_interp(x,uin, config);
 
 % plot oscillations and get scaled version of u
 [y,uscaled, start] = osc_plot_c(xfine, ufine, c);
@@ -27,7 +27,7 @@ xleft = -flipud(xfine);
 xfull = [ xleft(1:end-1); xfine ];
 
 % test to make sure full domain works on the Newton solver
-ufull_newton = solveKdV_fdiff_newton(xfull, [ufull;c]);
+ufull_newton = solveKdV_fdiff_newton(xfull, [ufull;c], config);
 figure;
 plot(xfull,ufull,xfull,ufull_newton);
 legend('constructed solution','result from Newton solver')
@@ -56,8 +56,8 @@ ud_max_full = [ ud_max_left(1:end-1) ; ud_max ];
 % ud_max_start = ud_max;
 
 % full versions
-ud_min_out = solveKdV_fdiff_newton(xfull,[ud_min_full;c]);
-ud_max_out = solveKdV_fdiff_newton(xfull,[ud_max_full;c]);
+ud_min_out = solveKdV_fdiff_newton(xfull,[ud_min_full;c], config);
+ud_max_out = solveKdV_fdiff_newton(xfull,[ud_max_full;c], config);
 xplot = xfull;
 ud_min_start = ud_min_full;
 ud_max_start = ud_max_full;

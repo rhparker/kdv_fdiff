@@ -1,4 +1,4 @@
-function [x,uout, c] = solveKdV_fdiff_newton_interp(xold,uold)
+function [x,uout, c] = solveKdV_fdiff_newton_interp(xold,uold, config)
 
 % - Solves 1D quadratic-cubic Swift-Hohenberg equation
 % - Finds localised pulse in snaking region and computes its stability
@@ -32,44 +32,7 @@ u = interp1(xold,uold(1:end-1),x);
 
 %% compute finite difference matrices
 
-% d_x
-D = sparse(1:N-1,[2:N-1 N],ones(N-1,1),N,N); 
-D = (D - D');
-% Neumann boundary conditions (first derivative 0 at L and R)
-D(1,2) = 0; 
-D(N,N-1) = 0;
-D = D./(2 * h);
-
-% d_xx
-D2 = sparse(1:N-1,[2:N-1 N],ones(N-1,1),N,N) - sparse(1:N,[1:N],ones(N,1),N,N);
-D2 = (D2 + D2');
-% Neumann boundary conditions (inherited from D)
-D2(1,2) = 2; 
-D2(N,N-1) = 2;
-D2 = D2/h^2;
-
-% d_xxx
-D3 = -2 * sparse(1:N-1,[2:N],ones(N-1,1),N,N) + sparse(1:N-2,[3:N],ones(N-2,1),N,N);
-D3 = (D3 - D3');
-% Neumann boundary conditions (third derivative 0 at L and R)
-D3(1,2)   = 0; D3(1,3)   = 0;
-D3(N,N-1) = 0; D3(N,N-2) = 0;
-% Neumann boundary conditions (inherited from D)
-D3(2,2)= -1; D3(N-1,N-1) = 1;
-D3 = D3/(2 * h^3);
-
-% d_xxxx
-D4 = sparse(1:N,[1:N],3 * ones(N,1),N,N) - sparse(1:N-1,[2:N],4 * ones(N-1,1),N,N) + sparse(1:N-2,[3:N],ones(N-2,1),N,N);
-D4 = (D4 + D4');
-% Neumann boundary conditions (inherited from above)
-D4(1,2) = -8; D4(1,3) = 2;
-D4(2,2) = 7;
-D4(N,N-1) = -8; D4(N,N-2) = 2;
-D4(N-1,N-1) = 7;
-D4 = D4/h^4;
-
-% identity matrix
-e = sparse(1:N,[1:N],1,N,N);
+[D, D2, D3, D4] = D_fdiff(N, h, config.BC);
 
 %% solve nonlinear problem using fsolve
 

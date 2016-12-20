@@ -11,7 +11,11 @@
 %       [u; c], where u is the solution and c is the speed
 load uc_data
 
+% method to use
+config.method = 'fdiff';
+config.BC = 'Neumann';
+
 % specify which index you want in uc
 index = 10;
 c = uc(end,index)
-osc(x, uc, index)
+osc(x, uc, index, config)

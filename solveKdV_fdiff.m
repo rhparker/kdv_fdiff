@@ -1,60 +1,20 @@
-function [x,contdata] = solveKdV_fdiff(gridpts, iterations)
+function [x,contdata] = solveKdV_fdiff(gridpts, iterations, config)
 %% setup
 
 N = gridpts;
-L = 50;             % domain truncation
+L = 50;                     % domain truncation
 h = L/(N-1); 
-x = (0:N-1)'*h;
-% x = (-(N-1):N-1)'*h
-% N = 2*N - 1;
+
+% half grid
+% x = (0:N-1)'*h;
+
+% full grid
+x = (-(N-1):N-1)'*h
+N = 2*N - 1;
 
 %% compute finite difference matrices
 
-% d_x
-D = sparse(1:N-1,[2:N-1 N],ones(N-1,1),N,N); 
-D = (D - D');
-% Neumann boundary conditions (first derivative 0 at L and R)
-D(1,2) = 0; 
-D(N,N-1) = 0;
-D = D./(2 * h);
-
-% d_xx
-D2 = sparse(1:N-1,[2:N-1 N],ones(N-1,1),N,N) - sparse(1:N,[1:N],ones(N,1),N,N);
-D2 = (D2 + D2');
-% Neumann boundary conditions (inherited from D)
-D2(1,2) = 2; 
-D2(N,N-1) = 2;
-% Enforce second derivative 0 on both sides
-% D2(1,1) = 0; D2(1,2)   = 0;
-% D2(N,N) = 0; D2(N,N-1) = 0;
-D2 = D2/h^2;
-
-% d_xxx
-D3 = -2 * sparse(1:N-1,[2:N],ones(N-1,1),N,N) + sparse(1:N-2,[3:N],ones(N-2,1),N,N);
-D3 = (D3 - D3');
-% Neumann boundary conditions (third derivative 0 at L and R)
-D3(1,2)   = 0; D3(1,3)   = 0;
-D3(N,N-1) = 0; D3(N,N-2) = 0;
-% Neumann boundary conditions (inherited from D)
-D3(2,2)= -1; D3(N-1,N-1) = 1;
-D3 = D3/(2 * h^3);
-
-% d_xxxx
-D4 = sparse(1:N,[1:N],3 * ones(N,1),N,N) - sparse(1:N-1,[2:N],4 * ones(N-1,1),N,N) + sparse(1:N-2,[3:N],ones(N-2,1),N,N);
-D4 = (D4 + D4');
-% Neumann boundary conditions (inherited from above)
-D4(1,2) = -8; D4(1,3) = 2;
-D4(2,2) = 7;
-D4(N,N-1) = -8; D4(N,N-2) = 2;
-D4(N-1,N-1) = 7;
-% Enforce fourth derivative 0 on both sides
-% D4(1,1) = 0; D4(1,2) = 0;   D4(1,3) = 0;
-% D4(N,N) = 0; D4(N,N-1) = 0; D4(N,N-2) = 0;
-D4 = D4/h^4;
-
-% identity matrix
-e = sparse(1:N,[1:N],1,N,N);
-
+[D, D2, D3, D4] = D_fdiff(N, h, config.BC);
 
 %% initial conditions
 
