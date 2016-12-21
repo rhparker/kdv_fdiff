@@ -1,6 +1,8 @@
-function [y,uscaled, start] = osc_plot_c(x, u, c)
+ function [y, uscaled, start, decay, freq] = osc_plot_c(x, u)
 % find the spatial eigenvalues
 % roots of nu^4 - nu^2 + c == 0
+% c is last element of u
+c = u(end);
 nu = roots([1 0 -1 0 c]);
 
 % oscillations frequency is imag(nu)
@@ -10,11 +12,12 @@ freq  = abs(imag(nu(1)));
 
 % where to start plot
 start = floor(length(x)/200);
-y=x(start:end);
+y     = x(start:end);
 
 % scale solution by exp(decay) to recover oscillations
-uscaled=u(start:end).*exp(decay*y);
-umax=max(uscaled);
+udata   = u(1:end-1);
+uscaled = udata(start:end).*exp(decay*y);
+umax    = max(uscaled);
 
 % plot along with sine function of same scaling
 figure;

@@ -3,13 +3,14 @@ function [D, D2, D3, D4] = D_fdiff(gridsize, h, BC)
 Neumann = strcmp(BC, 'Neumann')
 
 % for Neumann BCs, use the whole grid
-if Neumann
-    N = gridsize
-% for periodic BCs, we don't want the last point, since
-% it's the same as the first point
-else
-    N = gridsize - 1
-end
+N = gridsize
+% if Neumann
+%     N = gridsize
+% % for periodic BCs, we don't want the last point, since
+% % it's the same as the first point
+% else
+%     N = gridsize - 1
+% end
 
 % d_x
 D = sparse(1:N-1,[2:N-1 N],ones(N-1,1),N,N); 

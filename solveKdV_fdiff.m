@@ -1,3 +1,6 @@
+% starting with known solution, find numerical solutions
+% of 5th order KdV using paramater continuation method
+
 function [x,contdata] = solveKdV_fdiff(gridpts, iterations, config)
 %% setup
 
@@ -5,10 +8,10 @@ N = gridpts;
 L = 50;                     % domain truncation
 h = L/(N-1); 
 
-% half grid
+% % half grid
 % x = (0:N-1)'*h;
 
-% full grid
+full grid
 x = (-(N-1):N-1)'*h
 N = 2*N - 1;
 

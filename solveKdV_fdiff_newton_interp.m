@@ -1,4 +1,4 @@
-function [x,uout, c] = solveKdV_fdiff_newton_interp(xold,uold, config)
+function [xout, uout, c] = solveKdV_fdiff_newton_interp(xin, uin, config, gridpoints)
 
 % - Solves 1D quadratic-cubic Swift-Hohenberg equation
 % - Finds localised pulse in snaking region and computes its stability
@@ -10,7 +10,7 @@ function [x,uout, c] = solveKdV_fdiff_newton_interp(xold,uold, config)
 % it under the terms of the GNU General Public License as published by
 % the Free Software Foundation, either version 3 of the License, or
 % (at your option) any later version.
-% D N
+% 
 %     This program is distributed in the hope that it will be useful,
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -21,14 +21,14 @@ function [x,uout, c] = solveKdV_fdiff_newton_interp(xold,uold, config)
 
 %% setup
 
-N = 5000;    % number of mesh points, must be even! 
-L = 50;      % domain truncation
+N = gridpoints;         % number of mesh points, must be even! 
+L = xin(end) - xin(1)   % length of domain
 h = L/(N-1); 
-x = (0:N-1)'*h;
+xout = (0:N-1)'*h;
 
-par.c = uold(end);
+par.c = uin(end);
 c = par.c;
-u = interp1(xold,uold(1:end-1),x);
+u = interp1(xin,uin(1:end-1),xout);
 
 %% compute finite difference matrices
 
@@ -45,6 +45,9 @@ options=optimset('Display','iter','Jacobian','on','MaxIter',50);
 %% plot results (optional)
 
 % figure;
-% plot(x,uout); % plot solution
+% plot(xout,uout); % plot solution
 % title('Pulse on the full line');
+
+% reappend c to the output vector
+uout = [uout ; c];
 

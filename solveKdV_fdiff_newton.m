@@ -1,4 +1,4 @@
-function [uout, c] = solveKdV_fdiff_newton(xold,uold, config)
+function [uout, c] = solveKdV_fdiff_newton(xold, uold, config)
 
 % - Solves 1D quadratic-cubic Swift-Hohenberg equation
 % - Finds localised pulse in snaking region and computes its stability
@@ -48,4 +48,7 @@ options=optimset('Display','iter','Jacobian','on','MaxIter',50);
 % figure;
 % plot(x,uout); % plot solution
 % title('Pulse on the full line');
+
+% reappend c to the output vector
+uout = [uout ; c];
 
