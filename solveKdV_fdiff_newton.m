@@ -38,7 +38,7 @@ u = uold(1:end-1);
 %% solve nonlinear problem using fsolve
 
 % option to display output and use Jacobian
-options=optimset('Display','iter','Jacobian','on','MaxIter',50);
+options=optimset('Display','iter','Jacobian','on','MaxIter',100);
 
 % call solve
 [uout,fval] = fsolve(@(u) integratedKdV_fdiff(u,D,D2,D3,D4,N,par),u,options);
