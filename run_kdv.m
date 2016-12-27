@@ -78,8 +78,8 @@ up_out = solveKdV_fdiff_newton(xper, uper, p_config);
 
 for i = 1:4
     x_len   = length(x2) + 1;
-    z1      = zeros(i);
-    ud      = u2(x_len/2 - z1 + 1:x_len - z1);
+    z       = zeros(i);
+    ud      = u2(x_len/2 - z + 1:x_len - z);
     ud_left = flipud(ud);
     ud_full = [ ud_left(1:end-1) ; ud; c ];
 
@@ -90,3 +90,21 @@ for i = 1:4
     legend('initial guess','Newton solver output')
     title(strcat('double soliton, speed c =  ',num2str(c)))
 end
+
+%% fun with eigenvalues
+% don't run this for now, since it takes forever
+% and we have the output of eig saved
+
+x_len   = length(x2) + 1;
+z       = zeros(4);
+ud      = u2(x_len/2 - z + 1:x_len - z);
+ud_left = flipud(ud);
+ud_full = [ ud_left(1:end-1) ; ud; c ];
+
+ud_out  = solveKdV_fdiff_newton(x2, ud_full, config);
+figure;
+plot(x2, ud_full(1:end-1), x2, ud_out(1:end-1));
+legend('initial guess','Newton solver output')
+title(strcat('double soliton, speed c =  ',num2str(c)))
+
+[V,J] = eig_linear(x2, ud_full, config)

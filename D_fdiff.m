@@ -1,8 +1,7 @@
-function [D, D2, D3, D4] = D_fdiff(gridsize, h, BC)
+function [D, D2, D3, D4, D5] = D_fdiff(gridsize, h, BC)
 
 Neumann = strcmp(BC, 'Neumann')
 
-% for Neumann BCs, use the whole grid
 N = gridsize
 % if Neumann
 %     N = gridsize
@@ -40,7 +39,7 @@ else
     D2(N,1) = -1;
 end
 % scale by h^2
-D2 = D2/h^2;
+D2 = D2./h^2;
 
 % d_xxx
 D3 = -2 * sparse(1:N-1,[2:N],ones(N-1,1),N,N) + sparse(1:N-2,[3:N],ones(N-2,1),N,N);
@@ -57,7 +56,7 @@ else
     D3(N-1,1) = 1;  D3(N,1) = -2; D3(N,2) = 1;
 end
 % scale by 2h^3
-D3 = D3/(2 * h^3);
+D3 = D3./(2 * h^3);
 
 % d_xxxx
 D4 = sparse(1:N,[1:N],3 * ones(N,1),N,N) - sparse(1:N-1,[2:N],4 * ones(N-1,1),N,N) + sparse(1:N-2,[3:N],ones(N-2,1),N,N);
@@ -74,6 +73,29 @@ else
     D4(N-1,1) = 1; D4(N,1) = -4; D4(N,2) = 1;
 end
 % scale by h^4
-D4 = D4/h^4;
+D4 = D4./h^4;
+
+% d_xxxxx
+D5 = 5 * sparse(1:N-1,[2:N],ones(N-1,1),N,N) -4 * sparse(1:N-2,[3:N],ones(N-2,1),N,N) + sparse(1:N-3,[4:N],ones(N-3,1),N,N);
+D5 = (D5 - D5');
+% Neumann boundary conditions (inherited from above)
+if Neumann
+    D5(1,2) = 0; D5(1,3) = 0; D5(1,4) = 0;
+    D5(2,2) = 4;  D5(2,3) = 4;
+    D5(3,2) = -6;
+    D5(N,N-1) = 0; D5(N,N-2) = 0; D5(N,N-3) = 0;
+    D5(N-1, N-1) = -4; D5(N-1, N-2) = -4;
+    D5(N-2, N-1) = 6;
+% periodic BCs
+else
+    D5(1,N) = -5; D5(1,N-1) = 4; D5(1,N-2) = -1;
+    D5(2,N) = 4;  D5(2,N-1) = -1;
+    D5(3,N) = -1;
+    D5(N,1) = 5;  D5(N-1,1) = -4; D5(N-2,1) = 1;
+    D5(N,2) = -4; D5(N-1,2) = 1;
+    D5(N,3) = 1;
+end
+% scale by h^5
+D5 = D5./(2 * h^5);
 
 end

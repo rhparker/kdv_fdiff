@@ -11,7 +11,7 @@ h = L/(N-1);
 % % half grid
 % x = (0:N-1)'*h;
 
-full grid
+% full grid
 x = (-(N-1):N-1)'*h
 N = 2*N - 1;
 
