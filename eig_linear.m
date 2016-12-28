@@ -1,5 +1,5 @@
 % eigenvalues of linearization about stationary wave
-function [V, J] = eig_linear(x, u, config)
+function [lambda, V, J] = eig_linear(x, u, config)
     par.c = u(end);
     udata = u(1:end-1);
     N = length(udata);
@@ -8,6 +8,7 @@ function [V, J] = eig_linear(x, u, config)
     [D, D2, D3, D4, D5] = D_fdiff(N, h, config.BC);
     [F, J] = KdV_fdiff(udata,D,D2,D3,D4,D5,N,par);
     opts.tol = 10^(-10); 
-    V = eig(full(J));
+    [V, lambdaDiag] = eig(full(J));
+    lambda = diag(lambdaDiag);
 %     V = eigs(J, 10, 0, opts);
 end
