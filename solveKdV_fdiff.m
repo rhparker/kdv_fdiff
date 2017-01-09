@@ -5,15 +5,16 @@ function [x,contdata] = solveKdV_fdiff(gridpts, iterations, config)
 %% setup
 
 N = gridpts;
-L = 50;                     % domain truncation
+% L = 50;                     % domain truncation
+L = 100;
 h = L/(N-1); 
 
-% % half grid
-% x = (0:N-1)'*h;
+% half grid
+x = (0:N-1)'*h;
 
-% full grid
-x = (-(N-1):N-1)'*h
-N = 2*N - 1;
+% % full grid
+% x = (-(N-1):N-1)'*h
+% N = 2*N - 1;
 
 %% compute finite difference matrices
 
