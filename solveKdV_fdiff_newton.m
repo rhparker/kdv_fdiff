@@ -1,4 +1,4 @@
-function [uout, c] = solveKdV_fdiff_newton(xold, uold, config)
+function [uout, c] = solveKdV_fdiff_newton(xold, uold, config, iter)
 
 % - Solves 1D quadratic-cubic Swift-Hohenberg equation
 % - Finds localised pulse in snaking region and computes its stability
@@ -31,6 +31,11 @@ c = par.c;
 
 u = uold(1:end-1);
 
+% max number of iterations to use (default is 100)
+if ~exist('iter','var')
+    iter = 100;
+end
+
 %% compute finite difference matrices
 
 [D, D2, D3, D4] = D_fdiff(N, h, config.BC);
@@ -38,7 +43,8 @@ u = uold(1:end-1);
 %% solve nonlinear problem using fsolve
 
 % option to display output and use Jacobian
-options=optimset('Display','iter','Jacobian','on','MaxIter',100);
+TolFun = 1e-8;
+options=optimset('Display','iter','Jacobian','on','MaxIter', iter, 'TolFun', TolFun);
 
 % call solve
 [uout,fval] = fsolve(@(u) integratedKdV_fdiff(u,D,D2,D3,D4,N,par),u,options);
